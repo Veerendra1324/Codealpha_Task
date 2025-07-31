@@ -1,0 +1,94 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
+public class StudentGradeTrackerGUI extends JFrame {
+   private JTextField nameField;
+   private JTextField gradeField;
+   private JTextArea gradeListArea;
+   private DefaultTableModel tableModel;
+   private ArrayList<Student> students = new ArrayList();
+   private Student currentStudent;
+
+   public StudentGradeTrackerGUI() {
+      this.setTitle("Student Grade Tracker");
+      this.setSize(700, 500);
+      this.setDefaultCloseOperation(3);
+      this.setLayout(new BorderLayout());
+      JPanel var1 = new JPanel(new GridLayout(5, 2));
+      var1.setBorder(BorderFactory.createTitledBorder("Student Info"));
+      this.nameField = new JTextField();
+      this.gradeField = new JTextField();
+      this.gradeListArea = new JTextArea(3, 20);
+      this.gradeListArea.setEditable(false);
+      JButton var2 = new JButton("Start New Student");
+      JButton var3 = new JButton("Add Grade");
+      JButton var4 = new JButton("Save Student");
+      var1.add(new JLabel("Student Name:"));
+      var1.add(this.nameField);
+      var1.add(new JLabel("Grade:"));
+      var1.add(this.gradeField);
+      var1.add(var3);
+      var1.add(var2);
+      var1.add(new JLabel("Grades:"));
+      var1.add(new JScrollPane(this.gradeListArea));
+      var1.add(var4);
+      String[] var5 = new String[]{"Name", "Grades", "Average", "Highest", "Lowest"};
+      this.tableModel = new DefaultTableModel(var5, 0);
+      JTable var6 = new JTable(this.tableModel);
+      var2.addActionListener((var1x) -> {
+         String var2 = this.nameField.getText().trim();
+         if (!var2.isEmpty()) {
+            this.currentStudent = new Student(var2);
+            this.gradeListArea.setText("");
+            this.gradeField.setText("");
+            JOptionPane.showMessageDialog(this, "Student created. Now add grades.");
+         }
+
+      });
+      var3.addActionListener((var1x) -> {
+         if (this.currentStudent != null) {
+            try {
+               int var2 = Integer.parseInt(this.gradeField.getText().trim());
+               this.currentStudent.addGrade(var2);
+               this.gradeListArea.append("" + var2 + " ");
+               this.gradeField.setText("");
+            } catch (NumberFormatException var3) {
+               JOptionPane.showMessageDialog(this, "Enter a valid grade.");
+            }
+         }
+
+      });
+      var4.addActionListener((var1x) -> {
+         if (this.currentStudent != null) {
+            this.students.add(this.currentStudent);
+            this.tableModel.addRow(new Object[]{this.currentStudent.name, this.currentStudent.grades.toString(), String.format("%.2f", this.currentStudent.getAverage()), this.currentStudent.getHighest(), this.currentStudent.getLowest()});
+            this.currentStudent = null;
+            this.nameField.setText("");
+            this.gradeListArea.setText("");
+            JOptionPane.showMessageDialog(this, "Student saved.");
+         }
+
+      });
+      this.add(var1, "North");
+      this.add(new JScrollPane(var6), "Center");
+      this.setVisible(true);
+   }
+
+   public static void main(String[] var0) {
+      SwingUtilities.invokeLater(StudentGradeTrackerGUI::new);
+   }
+}

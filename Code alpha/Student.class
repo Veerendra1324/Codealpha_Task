@@ -1,0 +1,28 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+import java.util.ArrayList;
+
+class Student {
+   String name;
+   ArrayList<Integer> grades;
+
+   Student(String var1) {
+      this.name = var1;
+      this.grades = new ArrayList();
+   }
+
+   void addGrade(int var1) {
+      this.grades.add(var1);
+   }
+
+   double getAverage() {
+      return this.grades.stream().mapToInt(Integer::intValue).average().orElse(0.0);
+   }
+
+   int getHighest() {
+      return this.grades.stream().mapToInt(Integer::intValue).max().orElse(0);
+   }
+
+   int getLowest() {
+      return this.grades.stream().mapToInt(Integer::intValue).min().orElse(0);
+   }
+}
